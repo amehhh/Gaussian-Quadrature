@@ -2,6 +2,17 @@ import numpy as np
 from numpy.polynomial.legendre import Legendre
 from numpy.polynomial.legendre import leggauss
 
+# The quadrature implementations and linear mappings are based on:
+#
+# Garg, D., Patterson, M. A., Francolin, C., Darby, C. L.,
+# Huntington, G. T., Hager, W. W., & Rao, A. V.
+# "Direct trajectory optimization and costate estimation of
+# finite-horizon and infinite-horizon optimal control problems
+# using a Radau pseudospectral method."
+#
+# https://link.springer.com/article/10.1007/s10589-009-9291-0
+# https://arc.aiaa.org/doi/epdf/10.2514/1.33117
+
 tol = 1e-12
 
 def gauss_legendre_nodes_weights(N, a=0.0, b=1.0):
