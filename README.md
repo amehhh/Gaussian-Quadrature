@@ -3,10 +3,9 @@
 This repository contains implementations of High-Order Gaussian quadrature methods for numerical approximation of continous integration, including:
 
 $$
-\int_{a}^{b} f(x)\,dx \approx \sum_{i=1}^{N} w_i\,f(x_i)
+\int_{a}^{b} f(x) dx \approx \sum_{i=1}^{N} w_i * f(x_i)
 $$
 
-∫ₐᵇ f(x) dx ≈ Σᵢ₌₁ᴺ wᵢ f(xᵢ)
 
 - Gauss–Legendre  
 - Gauss–Radau (left and right)  
