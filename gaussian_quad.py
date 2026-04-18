@@ -1,0 +1,111 @@
+import numpy as np 
+from numpy.polynomial.legendre import Legendre
+from numpy.polynomial.legendre import leggauss
+
+tol = 1e-12
+
+def gauss_legendre_nodes_weights(N, a=0.0, b=1.0):
+
+    """
+    N-point Gauss–Legendre quadrature on the interval [a,b] (excluding endpoints).
+    Returns nodes t and weights w via a linear maping.
+    """
+    x, w = leggauss(N)               # returns nodes/weights on the interval [-1,1]
+    t_nodes = 0.5*(b-a)*(x+1) + a          # map nodes to the interval of integration [a,b]
+    weights = 0.5*(b-a) * w                 # weights for scaling
+    return t_nodes, weights
+
+def gauss_radau_left(N, a=-1.0, b=1.0):
+        
+    """
+    Left Gauss–Radau quadrature on the interval [a,b] including the end-point x = -1.
+    Left Gauss_Radau quadrature is Based on:
+        roots of (P_{N-1}(x) + P_N(x)) = 0
+        w_i = (1 - x_i) / [N * P_{N-1}(x_i)]^2 -  Interior weights for other nodes
+        w_0 = 2 / N^2 - end point weight at the fixed node x=-1
+    """
+    
+    # Legendre polynomials
+    Pn   = Legendre.basis(N)
+    Pn_1 = Legendre.basis(N-1)
+
+    # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
+    roots = (Pn_1 + Pn).roots()
+
+    # Combine with exact endpoint -1
+    x_nodes = np.concatenate(([-1.0], roots))
+
+    # Compute weights
+    w = np.zeros_like(x_nodes)
+    w[0]  = 2.0 / (N**2)
+    w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
+
+    # Map from nodes [-1,1] → [a,b] the integration interval
+    t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
+    weights = 0.5 * (b - a) * w
+    return t_nodes, weights
+
+def gauss_radau_right(N, a=-1.0, b=1.0):
+
+    """
+    Right Gauss–Radau quadrature on the interval [a,b] including at the end-point x = +1.
+    Right Gauss-Radau is based on:
+        roots of (P_N(x) - P_{N-1}(x)) = 0
+        w_i = (1 + x_i) / [N * P_{N-1}(x_i)]^2 - Interior weights 
+        w_N = 2 / N^2 - Endpoint weights for other node at the fixed node x = +1
+    """
+
+    # Legendre polynomials
+    Pn   = Legendre.basis(N)
+    Pn_1 = Legendre.basis(N-1)
+
+    # Internal nodes: roots of P_N(x) - P_{N-1}(x)
+    poly = Pn - Pn_1
+    roots = poly.roots()
+
+    # Combine with exact endpoint +1
+    x_nodes = np.concatenate((roots, [1.0]))
+
+    # Compute weights
+    w = np.zeros_like(x_nodes)
+    w[-1] = 2.0 / (N**2)
+    w[:-1] = (1 + roots) / ((N * Pn_1(roots))**2)
+
+    # Map from [-1,1] → [a,b] the integral interval
+    t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
+    weights = 0.5 * (b - a) * w
+    return t_nodes, weights
+
+def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
+
+    """
+    Gauss-Lobatto quadrature inside the interval [a,b], with the both endpoints x=-1 and x=+1.
+    Based on the Roots of the derivative of the Legendre polynomial P_{N-1}'(x) with endpoints x=-1 and x=1 concatenated before mapping 
+    w_0 = w_N = 2.0 / (N * (N -1 )) - Endpoint Weights 
+    w_i = 2 / [N (N - 1) (P_{N-1}(x_i))^2] - Interior weights
+    """
+
+    if N < 2:
+        raise ValueError("Need at least 2 Lobatto nodes")
+
+    # Interbal nodes: Roots of the derivate of P(N-1) or P'(N-1) 
+    Pn_1 = Legendre.basis(N-1)
+    x_int = Pn_1.deriv().roots()  
+    x_nodes = np.concatenate(([-1.0], x_int, [1.0])) # Added the endpoint nodes
+
+    w = np.zeros(N)
+    w[0] = w[-1] = 2.0 / (N * (N - 1))
+
+    # Evaluate the polynomial at all points at once for interior weights
+    Pn_1_vals = Pn_1(x_int) 
+    w[1:-1] = 2.0 / (N*(N-1) * (Pn_1_vals ** 2))
+
+    # Map to [a, b], the integral domain
+    t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
+    weights = 0.5 * (b - a) * w
+    return t_nodes, weights
+
+
+
+    
+
