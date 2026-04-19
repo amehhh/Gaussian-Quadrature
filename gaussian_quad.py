@@ -43,14 +43,12 @@ def gauss_radau_left(N, a=-1.0, b=1.0):
 
     # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
     roots = (Pn_1 + Pn).roots()
-
-    # Combine with exact endpoint -1
-    x_nodes = np.concatenate(([-1.0], roots))
+    x_nodes = roots
 
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[0]  = 2.0 / (N**2)
-    w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
+    w[1:] = (1 - roots[1:]) / ((N * Pn_1(roots[1:]))**2)
 
     # Map from nodes [-1,1] → [a,b] the integration interval
     t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
@@ -75,8 +73,7 @@ def gauss_radau_right(N, a=-1.0, b=1.0):
     poly = Pn - Pn_1
     roots = poly.roots()
 
-    # Combine with exact endpoint +1
-    x_nodes = np.concatenate((roots, [1.0]))
+    x_nodes = roots
 
     # Compute weights
     w = np.zeros_like(x_nodes)
