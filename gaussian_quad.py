@@ -43,7 +43,7 @@ def gauss_radau_left(N, a=-1.0, b=1.0):
 
     # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
     roots = (Pn_1 + Pn).roots()
-    x_nodes = roots
+    x_nodes = np.sort(roots)
 
     # Compute weights
     w = np.zeros_like(x_nodes)
