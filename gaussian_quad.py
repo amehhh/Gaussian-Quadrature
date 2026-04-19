@@ -32,7 +32,7 @@ def gauss_radau_left(N, a=-1.0, b=1.0):
     Left Gauss–Radau quadrature on the interval [a,b] including the end-point x = -1.
     Left Gauss_Radau quadrature is Based on:
         roots of (P_{N-1}(x) + P_N(x)) = 0
-        w_i = (1 - x_i) / [N * P_{N-1}(x_i)]^2 -  Interior weights for other nodes
+        w_i = (1 - x_i) / [N * P_{N-1}(x_i)]^2 - Interior weights for other nodes
         w_0 = 2 / N^2 - end point weight at the fixed node x=-1
     """
     
@@ -114,6 +114,43 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
     # Map to [a, b], the integral domain
     t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
     weights = 0.5 * (b - a) * w
+    return t_nodes, weights
+
+
+#The following functions are for ininfite horizon mapping on the domain [a,∞]
+
+def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
+        
+    """
+    Left Gauss–Radau quadrature on the interval [a,b] including the end-point x = -1.
+    Left Gauss_Radau quadrature is Based on:
+        roots of (P_{N-1}(x) + P_N(x)) = 0
+        w_i = (1 - x_i) / [N * P_{N-1}(x_i)]^2 - Interior weights for other nodes
+        w_0 = 2 / N^2 - end point weight at the fixed node x=-1
+    """
+    
+    # Legendre polynomials
+    Pn   = Legendre.basis(N)
+    Pn_1 = Legendre.basis(N-1)
+
+    # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
+    roots = (Pn_1 + Pn).roots()
+
+    # Combine with exact endpoint -1
+    x_nodes = np.concatenate(([-1.0], roots))
+
+    # Compute weights
+    w = np.zeros_like(x_nodes)
+    w[0]  = 2.0 / (N**2)
+    w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
+
+    # Step 4: infinite-horizon mapping τ → t
+    t_nodes = (1 + x_nodes) / (1 - x_nodes)
+
+    # Step 5: transformed weights: multiply by dt/dτ
+    dt_dtau = 2.0 / (1 - x_nodes)**2
+    weights = w * dt_dtau
+
     return t_nodes, weights
 
 
