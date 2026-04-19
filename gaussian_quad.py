@@ -123,11 +123,12 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
 def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
         
     """
-    Left Gauss–Radau quadrature on the interval [a,b] including the end-point x = -1.
+    Left Gauss–Radau quadrature on the interval [a,∞] 
     Left Gauss_Radau quadrature is Based on:
         roots of (P_{N-1}(x) + P_N(x)) = 0
         w_i = (1 - x_i) / [N * P_{N-1}(x_i)]^2 - Interior weights for other nodes
         w_0 = 2 / N^2 - end point weight at the fixed node x=-1
+        Infinite mapping to the domain 0 to ∞
     """
     
     # Legendre polynomials
