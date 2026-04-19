@@ -100,7 +100,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
     if N < 2:
         raise ValueError("Need at least 2 Lobatto nodes")
 
-    # Interbal nodes: Roots of the derivate of P(N-1) or P'(N-1) 
+    # Interval nodes: Roots of the derivate of P(N-1) or P'(N-1) 
     Pn_1 = Legendre.basis(N-1)
     x_int = Pn_1.deriv().roots()  
     x_nodes = np.concatenate(([-1.0], x_int, [1.0])) # Added the endpoint nodes
@@ -108,7 +108,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
     w = np.zeros(N)
     w[0] = w[-1] = 2.0 / (N * (N - 1))
 
-    # Evaluate the polynomial at all points at once for interior weights
+    # Evaluate the polynomial at all points once for interior weights
     Pn_1_vals = Pn_1(x_int) 
     w[1:-1] = 2.0 / (N*(N-1) * (Pn_1_vals ** 2))
 
