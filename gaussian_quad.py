@@ -155,11 +155,11 @@ def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
 
     return t_nodes, weights
 
-def gauss_radau_left_log_mapping(N):
+def gauss_radau_left_infinite_logmapping(N):
 
     """
     Left Gauss–Radau quadrature on [-1,1] using the nodes
-    from roots of L_N + L_{N+1}, mapped to t = log(4 / (1 - tau)^2) and dt/dtau = 2 /(1-tau)
+    from roots of P_N + P_{N-1}, mapped to the infinite time horizon using t = log(4 / (1 - tau)^2) and dt/dtau = 2 /(1-tau)
     """
 
     # Legendre polynomials
