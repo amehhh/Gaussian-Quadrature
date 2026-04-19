@@ -2,7 +2,7 @@ import numpy as np
 from numpy.polynomial.legendre import Legendre
 from numpy.polynomial.legendre import leggauss
 
-# The quadrature implementations and linear mappings are based on:
+# The quadrature implementations for continous Integrals using linear mappings are based on the paper:
 #
 # Garg, D., Patterson, M. A., Francolin, C., Darby, C. L.,
 # Huntington, G. T., Hager, W. W., & Rao, A. V.
@@ -22,8 +22,8 @@ def gauss_legendre_nodes_weights(N, a=0.0, b=1.0):
     N-point Gauss–Legendre quadrature on the interval [a,b] (excluding endpoints).
     Returns nodes t and weights w via a linear maping.
     """
-    x, w = leggauss(N)               # returns nodes/weights on the interval [-1,1]
-    t_nodes = 0.5*(b-a)*(x+1) + a          # map nodes to the interval of integration [a,b]
+    x, w = leggauss(N)                      # returns nodes/weights on the interval [-1,1]
+    t_nodes = 0.5*(b-a)*(x+1) + a           # map nodes to the interval of integration [a,b]
     weights = 0.5*(b-a) * w                 # weights for scaling
     return t_nodes, weights
 
