@@ -12,6 +12,7 @@ from numpy.polynomial.legendre import leggauss
 #
 # https://link.springer.com/article/10.1007/s10589-009-9291-0
 # https://arc.aiaa.org/doi/epdf/10.2514/1.33117
+# https://personal.ntu.edu.sg/lilian/CiCp09Review.pdf
 
 tol = 1e-12
 
