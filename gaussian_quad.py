@@ -144,10 +144,10 @@ def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
     w[0]  = 2.0 / (N**2)
     w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
 
-    # Step 4: infinite-horizon mapping τ → t
+    # Infinite-horizon mapping τ → t
     t_nodes = (1 + x_nodes) / (1 - x_nodes)
 
-    # Step 5: transformed weights: multiply by dt/dτ
+    # Transformed weights: multiply by dt/dτ
     dt_dtau = 2.0 / (1 - x_nodes)**2
     weights = w * dt_dtau
 
