@@ -118,7 +118,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
     return t_nodes, weights
 
 
-#The following functions are for ininfite horizon mapping on the domain [a,∞]
+# The following functions are for infite horizon mapping on the domain [a,∞] and different types of mappings
 
 def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
         
