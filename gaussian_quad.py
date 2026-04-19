@@ -180,7 +180,6 @@ def gauss_radau_left_log_mapping(N):
     # Infinite-horizon log mapping τ → t with the mapping t = log(4 / (1 - tau)^2)
     t_nodes = np.log(4.0 / (1 - x_nodes)**2)
 
-
     dt_dtau = 2.0 / (1 - x_nodes)
     weights = w * dt_dtau
 
