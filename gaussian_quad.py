@@ -118,7 +118,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
 # The following functions are for infite horizon mapping on the domain [a,∞] and different types of mappings
 
 def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
-        
+    # Check this out . There is probably some issue with this function in terms of the mapping.  
     """
     Left Gauss–Radau quadrature on the interval [a,∞] 
     Left Gauss_Radau quadrature is Based on:
