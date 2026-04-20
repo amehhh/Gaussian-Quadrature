@@ -78,7 +78,7 @@ def gauss_radau_right(N, a=-1.0, b=1.0):
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[-1] = 2.0 / (N**2)
-    w[:-1] = (1 + roots) / ((N * Pn_1(roots))**2)
+    w[:-1] = (1 + roots[:-1]) / ((N * Pn_1(roots[:-1]))**2)
 
     # Map from [-1,1] → [a,b] the integral interval
     t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
