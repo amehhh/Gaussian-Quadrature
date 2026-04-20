@@ -43,12 +43,17 @@ def gauss_radau_left(N, a=-1.0, b=1.0):
 
     # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
     roots = (Pn_1 + Pn).roots()
-    x_nodes = np.sort(roots)
+
+    # Remove any root numerically equal to -1
+    roots = roots[roots > -1 + tol]
+
+    # Combine with exact endpoint -1
+    x_nodes = np.concatenate(([-1.0], roots))
 
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[0]  = 2.0 / (N**2)
-    w[1:] = (1 - roots[1:]) / ((N * Pn_1(roots[1:]))**2)
+    w[1:] = (1 - x_nodes[1:]) / ((N * Pn_1(x_nodes[1:]))**2)
 
     # Map from nodes [-1,1] → [a,b] the integration interval
     t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
@@ -71,14 +76,18 @@ def gauss_radau_right(N, a=-1.0, b=1.0):
 
     # Internal nodes: roots of P_N(x) - P_{N-1}(x)
     poly = Pn - Pn_1
-    roots = poly.roots()
+    roots = np.sort(poly.roots())
 
-    x_nodes = roots
+    #  Remove any root numerically equal to +1
+    roots = roots[roots < 1 - tol]
+
+    #Combine with exact endpoint +1
+    x_nodes = np.concatenate((roots, [1.0]))
 
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[-1] = 2.0 / (N**2)
-    w[:-1] = (1 + roots[:-1]) / ((N * Pn_1(roots[:-1]))**2)
+    w[:-1] = (1 + x_nodes[:-1]) / ((N * Pn_1(x_nodes[:-1]))**2)
 
     # Map from [-1,1] → [a,b] the integral interval
     t_nodes = 0.5 * (b - a) * (x_nodes + 1) + a
@@ -119,6 +128,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
 
 def gauss_radau_left_infinite(N):
 
+
     """
     Left Gauss–Radau quadrature on the interval [a,∞] 
     Left Gauss_Radau quadrature is Based on:
@@ -140,7 +150,6 @@ def gauss_radau_left_infinite(N):
 
     # Combine with exact endpoint -1
     x_nodes = np.concatenate(([-1.0], roots)) 
-    print(x_nodes[0])
 
     # Compute weights
     w = np.zeros_like(x_nodes)
@@ -159,8 +168,8 @@ def gauss_radau_left_infinite(N):
 def gauss_radau_left_infinite_logmapping(N):
 
     """
-    Left Gauss–Radau quadrature on [-1,1] using the nodes
-    from roots of the legendre polynomial P_N + P_{N-1}, mapped to the infinite time horizon using t = log(4 / (1 - tau)^2) and dt/dtau = 2 /(1-tau)
+    Left Gauss–Radau quadrature on [-1,1] → [0,∞) using the nodes
+    from roots of the legendre polynomial P_N + P_{N-1}, mapped using t = log(4 / (1 - tau)^2) and dt/dtau = 2 /(1-tau)
     """
 
     # Legendre polynomials
@@ -170,13 +179,16 @@ def gauss_radau_left_infinite_logmapping(N):
     # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
     roots = (Pn_1 + Pn).roots()
 
+    # Remove any root numerically equal to -1
+    roots = roots[roots > -1 + tol]
+
     # Combine with exact endpoint -1
     x_nodes = np.concatenate(([-1.0], roots))
 
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[0]  = 2.0 / (N**2)
-    w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
+    w[1:] = (1 - x_nodes[1:]) / ((N * Pn_1(x_nodes[1:]))**2)
 
     # Infinite-horizon log mapping τ → t with the mapping t = log(4 / (1 - tau)^2)
     t_nodes = np.log(4.0 / (1 - x_nodes)**2)
@@ -185,7 +197,6 @@ def gauss_radau_left_infinite_logmapping(N):
     weights = w * dt_dtau
 
     return t_nodes,weights
-
 
 
 
