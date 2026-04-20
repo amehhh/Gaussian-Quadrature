@@ -117,9 +117,7 @@ def gauss_lobatto_nodes_weights(N, a=-1.0, b=1.0):
 
 # The following functions are for infite horizon mapping on the domain [a,∞] and different types of mappings
 
-def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
-    # Check this out . There is probably some issue with this function in terms of the mapping.
-    # This does not use a and b for the mapping - Should take it out
+def gauss_radau_left_infinite(N):
 
     """
     Left Gauss–Radau quadrature on the interval [a,∞] 
@@ -137,13 +135,17 @@ def gauss_radau_left_infinite(N, a=-1.0, b=1.0):
     # Internal nodes: roots of the sum of legendre polynomials P_{N-1}(x) + P_N(x)
     roots = (Pn_1 + Pn).roots()
 
+    # Remove any root numerically equal to -1
+    roots = roots[roots > -1 + tol]
+
     # Combine with exact endpoint -1
-    x_nodes = np.concatenate(([-1.0], roots))
+    x_nodes = np.concatenate(([-1.0], roots)) 
+    print(x_nodes[0])
 
     # Compute weights
     w = np.zeros_like(x_nodes)
     w[0]  = 2.0 / (N**2)
-    w[1:] = (1 - roots) / ((N * Pn_1(roots))**2)
+    w[1:] = (1 - x_nodes[1:]) / ((N * Pn_1(x_nodes[1:]))**2)
 
     # Infinite-horizon mapping τ → t
     t_nodes = (1 + x_nodes) / (1 - x_nodes)
